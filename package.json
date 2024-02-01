@@ -1,0 +1,17 @@
+{
+  "name": "allowance-ext",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "parcel watch src/manifest.json --host localhost --config @parcel/config-webextension",
+    "build": "parcel build src/manifest.json --config @parcel/config-webextension"
+  },
+  "author": "Mackaber",
+  "license": "ISC",
+  "devDependencies": {
+    "@parcel/config-webextension": "^2.11.0"
+  },
+  "dependencies": {
+    "parcel": "^2.11.0"
+  }
+}
