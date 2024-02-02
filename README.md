@@ -14,5 +14,5 @@ With Allowance, you're in control. The extension allows you to easily add or rem
 
 ## Installation
 
-Just Go to releases, grab dist.zip and follow this guide https://www.theseotoday.com/2022/09/how-to-add-extensions-to-chrome.html
+Just grab [dist.zip](https://github.com/Mackaber/Allowance-ext/releases/download/0.0.1/dist.zip) and follow this guide https://www.theseotoday.com/2022/09/how-to-add-extensions-to-chrome.html
 ( There are no malicious code on it, I promise, you can check ;) )
