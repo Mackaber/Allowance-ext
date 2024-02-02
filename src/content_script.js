@@ -4,7 +4,7 @@ let shadow_node = block_node.attachShadow({ mode: 'open' });
 
 const get_title = async () => {
   const res = await chrome.storage.sync.get(['title']);
-  return res ? res.title : 'YOU CAN EDIT THIS MESSAGE, JUST CLICK IT';
+  return res.title ? res.title : 'YOU CAN EDIT THIS MESSAGE, JUST CLICK IT';
 }
 
 const AddOverlay = async () => {
