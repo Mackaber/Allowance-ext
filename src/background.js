@@ -73,3 +73,6 @@ chrome.tabs.onActivated.addListener(({tabId}) => {
   executeOnTab(tabId);
 });
 
+chrome.tabs.onUpdated.addListener((tabId) => {
+  executeOnTab(tabId);
+});
