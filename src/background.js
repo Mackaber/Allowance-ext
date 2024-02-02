@@ -1,10 +1,13 @@
-const urlMatchesExcludedSites = (url, excludedSites)  =>
-  excludedSites.some(pattern => new RegExp(pattern).test(url));
+// Object to keep track of tabs and injection status
+let injectedTabs = {};
+
+const urlMatchesExcludedSites = (url, excludedSites) =>
+  excludedSites.some((pattern) => new RegExp(pattern).test(url));
 
 const isSiteBlocked = async (url) => {
-  const res = await chrome.storage.sync.get(['excludedSites']);
+  const res = await chrome.storage.sync.get(["excludedSites"]);
   return res ? urlMatchesExcludedSites(url, res.excludedSites) : false;
-}
+};
 
 // Extract the site from an url
 // For example https://chat.openai.com/c/6b9ab6af-ba69-4bdb-8b21-ae71288a210d turns into https:\/\/chat.openai.com/*
@@ -28,6 +31,8 @@ const executeOnTab = async (tabId) => {
           .executeScript({
             target: { tabId: tabId },
             files: ["./content_script.js"],
+          }).then(() => {
+            injectedTabs[tabId] = true;
           })
           .catch((e) => {
             console.error(e);
@@ -39,7 +44,7 @@ const executeOnTab = async (tabId) => {
       }
     });
   });
-}
+};
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
@@ -51,15 +56,15 @@ chrome.runtime.onInstalled.addListener(() => {
 
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   if (info.menuItemId === "toggle-site-blocked") {
-    const response = await chrome.storage.sync.get(['excludedSites']);
+    const response = await chrome.storage.sync.get(["excludedSites"]);
     const excludedSites = response.excludedSites || [];
-    if(urlMatchesExcludedSites(tab.url, excludedSites)) {
+    if (urlMatchesExcludedSites(tab.url, excludedSites)) {
       chrome.storage.sync.set({
         excludedSites: excludedSites.filter(
           (site) => site !== extractSite(tab.url)
         ),
       });
-      chrome.tabs.reload(tab.id)
+      chrome.tabs.reload(tab.id);
     } else {
       chrome.storage.sync.set({
         excludedSites: [...excludedSites, extractSite(tab.url)],
@@ -69,10 +74,12 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   }
 });
 
-chrome.tabs.onActivated.addListener(({tabId}) => {
+chrome.tabs.onActivated.addListener(({ tabId }) => {
+  if (injectedTabs[tabId]) return;
   executeOnTab(tabId);
 });
 
 chrome.tabs.onUpdated.addListener((tabId) => {
+  if(injectedTabs[tabId]) return
   executeOnTab(tabId);
 });
