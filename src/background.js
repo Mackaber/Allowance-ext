@@ -1,6 +1,3 @@
-// Object to keep track of tabs and injection status
-let injectedTabs = {};
-
 const urlMatchesExcludedSites = (url, excludedSites) =>
   excludedSites.some((pattern) => new RegExp(pattern).test(url));
 
@@ -31,8 +28,6 @@ const executeOnTab = async (tabId) => {
           .executeScript({
             target: { tabId: tabId },
             files: ["./content_script.js"],
-          }).then(() => {
-            injectedTabs[tabId] = true;
           })
           .catch((e) => {
             console.error(e);
@@ -75,11 +70,9 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
 });
 
 chrome.tabs.onActivated.addListener(({ tabId }) => {
-  if (injectedTabs[tabId]) return;
   executeOnTab(tabId);
 });
 
 chrome.tabs.onUpdated.addListener((tabId) => {
-  if(injectedTabs[tabId]) return
   executeOnTab(tabId);
 });

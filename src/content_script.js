@@ -1,5 +1,8 @@
+const SHADOW_ROOT_ID = 'allowance-shadow-root-c89df1c2-8925-4902-b27d-3d44552907e0';
 // Create the new node you want to insert
+
 let block_node = document.createElement('div');
+block_node.id = SHADOW_ROOT_ID;
 let shadow_node = block_node.attachShadow({ mode: 'open' });
 
 const get_title = async () => {
@@ -40,4 +43,6 @@ const AddOverlay = async () => {
     });
 }
 
-AddOverlay();
+if(!document.getElementById(SHADOW_ROOT_ID)) {
+  AddOverlay();
+}
