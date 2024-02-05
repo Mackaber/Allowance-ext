@@ -6,14 +6,14 @@ const get_title = async () => {
 }
 
 const AttachShadowRoot = () => {
-  console.log('AttachShadowRoot');
+  //console.log('AttachShadowRoot');
   const block_node = document.getElementById(SHADOW_ROOT_ID);
   const shadow_node = block_node.attachShadow({ mode: 'open' });
   createOverlay(shadow_node);
 }
 
 const DettachShadowRoot = () => {
-  console.log('DettachShadowRoot');
+  //console.log('DettachShadowRoot');
   const block_node = document.getElementById(SHADOW_ROOT_ID);
   const clone = block_node.cloneNode(); // Clone the element without the shadow DOM
   clone.id = SHADOW_ROOT_ID;
