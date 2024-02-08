@@ -54,6 +54,7 @@ const createOverlay = async (shadow_node) => {
 // Create the new node you want to insert
 let block_node = document.createElement('div');
 block_node.id = SHADOW_ROOT_ID;
-if (!document.getElementById(SHADOW_ROOT_ID))
-  document.body.appendChild(block_node); 
-AttachShadowRoot();
+if (!document.getElementById(SHADOW_ROOT_ID)) {
+  document.body.appendChild(block_node);
+  AttachShadowRoot();
+}
