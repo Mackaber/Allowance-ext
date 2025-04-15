@@ -9,7 +9,8 @@
   "author": "Mackaber",
   "license": "ISC",
   "devDependencies": {
-    "@parcel/config-webextension": "^2.11.0"
+    "@parcel/config-webextension": "^2.11.0",
+    "@parcel/transformer-inline-string": "2.11.0"
   },
   "dependencies": {
     "parcel": "^2.11.0"

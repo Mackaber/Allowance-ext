@@ -1,3 +1,5 @@
+import overlayHtml from 'bundle-text:./overlay.html';
+
 const SHADOW_ROOT_ID = 'allowance-shadow-root-c89df1c2-8925-4902-b27d-3d44552907e0';
 
 const get_title = async () => {
@@ -21,34 +23,41 @@ const DettachShadowRoot = () => {
 }
 
 const createOverlay = async (shadow_node) => {
-  shadow_node.innerHTML = `
-  <div id="allowance-extension-overlay" style="position: fixed; left: 0px; top: 0px; width: 100%; height: 100%; z-index: 9000001; background-image: -webkit-linear-gradient(bottom, rgb(204, 204, 204) 0%, rgb(255, 255, 255) 75%); padding: 5em 1em 1em; text-align: center; color: rgb(0, 0, 0); font: 16px / 1 sans-serif;">
-    <h1 id="allowance-extension-title" contenteditable="true" style="margin: 0px 0px 0.5em;border: none;outline: none;background: none;padding: 0;">${await get_title()}</h1><br />
-    <select id="allowance-extension-duration" style="font-size: 2em;">
-      <option value="" selected disabled>Select a time range...</option>
-      <option value="60000">1 Minute</option>
-      <option value="300000">5 Minutes</option>
-      <option value="900000">15 Minutes</option>
-      <option value="1800000">30 Minutes</option>
-    </select>
-  </div>
-  `;
+  let html = overlayHtml;
+  html = html.replace('${await get_title()}', await get_title());
+  shadow_node.innerHTML = html;
 
-  shadow_node
-  .querySelector("#allowance-extension-duration")
-  .addEventListener("change", (event) => {
-    DettachShadowRoot();
-    setTimeout(() => {
-      AttachShadowRoot();
-    }, Number(event.target.value));
+  // Set greyscale toggle and filter based on current state or default
+  const greyscaleToggle = shadow_node.querySelector("#allowance-toggle-greyscale");
+  // Try to restore previous state from storage, fallback to unchecked
+  chrome.storage.sync.get(['greyscaleEnabled'], (res) => {
+    const enabled = res.greyscaleEnabled ?? false;
+    greyscaleToggle.checked = enabled;
+    document.body.style.filter = enabled ? 'grayscale(100%)' : '';
   });
 
   shadow_node
-  .querySelector("#allowance-extension-title")
-  .addEventListener("input", (event) => {
-    console.log(event.target.innerHTML)
-    chrome.storage.sync.set({ title: event.target.innerHTML });
-  });
+    .querySelector("#allowance-extension-duration")
+    .addEventListener("change", (event) => {
+      DettachShadowRoot();
+      setTimeout(() => {
+        AttachShadowRoot();
+      }, Number(event.target.value));
+    });
+
+  shadow_node
+    .querySelector("#allowance-extension-title")
+    .addEventListener("input", (event) => {
+      console.log(event.target.innerHTML)
+      chrome.storage.sync.set({ title: event.target.innerHTML });
+    });
+
+  greyscaleToggle
+    .addEventListener("change", (event) => {
+      // Add greyscale to all elements
+      document.body.style.filter = event.target.checked ? 'grayscale(100%)' : '';
+      chrome.storage.sync.set({ greyscaleEnabled: event.target.checked });
+    })
 }
 
 // Create the new node you want to insert
