@@ -1,28 +1,31 @@
 <div id="allowance-extension-overlay" style="position: fixed; left: 0px; top: 0px; width: 100%; height: 100%; z-index: 9000001; background-image: -webkit-linear-gradient(bottom, rgb(204, 204, 204) 0%, rgb(255, 255, 255) 75%); padding: 5em 1em 1em; text-align: center; color: rgb(0, 0, 0); font: 16px / 1 sans-serif;">
-  <!-- Toggle Switch Row -->
-  <div style="display: flex; align-items: center; position: absolute; top: 1em; left: 1em; width: auto;">
-    <span style="margin-right: 0.5em; font-size: 1em;">Toggle greyscale</span>
-    <label style="display: inline-block; position: relative; width: 48px; height: 24px;">
-      <input type="checkbox" id="allowance-toggle-greyscale" style="opacity:0;width:0;height:0;" checked>
-      <span style="
-        position: absolute;
-        cursor: pointer;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background-color: #ccc;
-        border-radius: 24px;
-        transition: .4s;
-        ">
-      </span>
-      <span style="
-        position: absolute;
-        left: 4px; top: 4px;
-        width: 16px; height: 16px;
-        background: white;
-        border-radius: 50%;
-        transition: .4s;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-        "></span>
-    </label>
+  <!-- Top Row: Disable for today + Toggle Switch (stacked) -->
+  <div style="display: flex; flex-direction: column; align-items: flex-start; position: absolute; top: 1em; left: 1em; width: auto;">
+    <button id="allowance-disable-today-btn" style="margin-bottom: 1em; padding: 0.3em 1em; font-size: 1em; border-radius: 4px; border: 1px solid #888; background: #fff; cursor: pointer; color: #000;">Disable for today</button>
+    <div style="display: flex; align-items: center;">
+      <span style="margin-right: 0.5em; font-size: 1em; color: #000;">Toggle greyscale</span>
+      <label style="display: inline-block; position: relative; width: 48px; height: 24px;">
+        <input type="checkbox" id="allowance-toggle-greyscale" style="opacity:0;width:0;height:0;" checked>
+        <span style="
+          position: absolute;
+          cursor: pointer;
+          top: 0; left: 0; right: 0; bottom: 0;
+          background-color: #ccc;
+          border-radius: 24px;
+          transition: .4s;
+          ">
+        </span>
+        <span style="
+          position: absolute;
+          left: 4px; top: 4px;
+          width: 16px; height: 16px;
+          background: white;
+          border-radius: 50%;
+          transition: .4s;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+          "></span>
+      </label>
+    </div>
     <style>
       /* Updated selectors to match the new checkbox id */
       #allowance-toggle-greyscale:checked + span {
@@ -38,6 +41,7 @@
     <option value="" selected disabled>Select a time range...</option>
     <option value="60000">1 Minute</option>
     <option value="300000">5 Minutes</option>
+    <option value="1500000">10 Minutes</option>
     <option value="900000">15 Minutes</option>
     <option value="1800000">30 Minutes</option>
   </select>

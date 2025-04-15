@@ -47,6 +47,11 @@ chrome.runtime.onInstalled.addListener(() => {
     title: "Add this site to the blocked list",
     contexts: ["action"], // Use "browser_action" for Manifest V2
   });
+  chrome.contextMenus.create({
+    id: "reenable-allowance-today",
+    title: "Re-enable Allowance overlay for today",
+    contexts: ["action"],
+  });
 });
 
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
@@ -66,6 +71,11 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
       });
     }
     executeOnTab(tab.id);
+  }
+  if (info.menuItemId === "reenable-allowance-today") {
+    chrome.storage.sync.remove("disabledForToday");
+    // Optionally, reload the tab to show the overlay again
+    if (tab && tab.id) chrome.tabs.reload(tab.id);
   }
 });
 
