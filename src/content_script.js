@@ -2,6 +2,15 @@ import overlayHtml from 'bundle-text:./overlay.html';
 
 const SHADOW_ROOT_ID = 'allowance-shadow-root-c89df1c2-8925-4902-b27d-3d44552907e0';
 
+const InsertGreyScaleBackdrop = () => {
+  const block_node = document.getElementById(SHADOW_ROOT_ID);
+  const shadow_node = block_node.attachShadow({ mode: 'open' });
+  shadow_node.innerHTML = `
+  <div style="backdrop-filter: grayscale(100%); position: fixed;width: 100%; height: 100%; z-index: 9000001; top: 0; left: 0; pointer-events: none;">
+  </div>
+  `;
+}
+
 const get_title = async () => {
   const res = await chrome.storage.sync.get(['title']);
   return res.title ? res.title : 'YOU CAN EDIT THIS MESSAGE, JUST CLICK IT';
@@ -60,13 +69,13 @@ const createOverlay = async (shadow_node) => {
       const modal = document.createElement('div');
       modal.style = `
         position: fixed; left: 0; top: 0; width: 100vw; height: 100vh;
-        background: rgba(0,0,0,0.4); z-index: 9999999; display: flex; align-items: center; justify-content: center;
+        background: rgba(216, 255, 190, 0.4); z-index: 9999999; display: flex; align-items: center; justify-content: center;
       `;
       modal.innerHTML = `
         <div style="background: white; padding: 2em; border-radius: 8px; box-shadow: 0 2px 8px #0003; text-align: center; color: #000;">
           <div style="margin-bottom: 1em; color: #000;">Are you sure you want to disable for today?</div>
-          <button id="allowance-confirm-disable" style="margin-right:1em; color: #000;">Yes</button>
-          <button id="allowance-cancel-disable" style="color: #000;">No</button>
+          <button id="allowance-confirm-disable" style="margin-right:1em; color: #FFF;">Yes</button>
+          <button id="allowance-cancel-disable" style="color: #FFF;">No</button>
         </div>
       `;
       document.body.appendChild(modal);
@@ -90,16 +99,24 @@ const createOverlay = async (shadow_node) => {
   chrome.storage.sync.get(['greyscaleEnabled'], (res) => {
     const enabled = res.greyscaleEnabled ?? false;
     greyscaleToggle.checked = enabled;
-    document.body.style.filter = enabled ? 'grayscale(100%)' : '';
   });
 
   shadow_node
     .querySelector("#allowance-extension-duration")
     .addEventListener("change", (event) => {
-      DettachShadowRoot();
-      setTimeout(() => {
-        AttachShadowRoot();
-      }, Number(event.target.value));
+      if(greyscaleToggle.checked) {
+        DettachShadowRoot();
+        InsertGreyScaleBackdrop();
+        setTimeout(() => {
+          DettachShadowRoot();
+          AttachShadowRoot();
+        }, Number(event.target.value));
+      } else {
+        DettachShadowRoot();
+        setTimeout(() => {
+          AttachShadowRoot();
+        }, Number(event.target.value));
+      }
     });
 
   shadow_node
@@ -110,9 +127,7 @@ const createOverlay = async (shadow_node) => {
     });
 
   greyscaleToggle
-    .addEventListener("change", (event) => {
-      // Add greyscale to all elements
-      document.body.style.filter = event.target.checked ? 'grayscale(100%)' : '';
+    .addEventListener("change", (event) => {      
       chrome.storage.sync.set({ greyscaleEnabled: event.target.checked });
     })
 }
